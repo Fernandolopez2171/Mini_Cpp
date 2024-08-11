@@ -1,0 +1,62 @@
+input->prg
+
+prg->(func)*
+
+func->  type IDENT OPEN_PAR param_list CLOSE_PAR
+        OPEN_CURLY
+        ( var_decl SEMICOLON )*
+        ( stmt SEMICOLON )*
+        CLOSE_CURLY
+
+param_list -> param (COMMA param)*
+           | %empty
+
+param -> TYPE IDENT
+        |TYPE AVPERSANS IDENT
+
+var_decl->  type IDENT ( COMMA IDENT )* 
+
+type -> KW_INT
+        |KW_INT OPEN_BRACKET NUMBER CLOSE_BRACKET
+
+stmt -> IDENT (OPEN_BRACKET expr CLOSE_BRACKET)? OP_ASSIGN expr
+        |KW_IF OPEN_PAR expr CLOSE_PAR
+            OPEN_CURLY ( stmt SEMICOLON )*
+            CLOSE_CURLY
+            (KW_ELSE OPEN_CURLY (stmt SEMICOLON)* CLOSE_CURLY)?
+        |KW_WHILE OPEN_PAR expr CLOSE_PAR
+            OPEN_CURLY(stmt SEMICOLON)*
+            CLOSE_CURLY
+        |KW_COUT LT_LT cout_arg (LT_LT cout_arg)*
+        |KW GT_GT IDENT (OPEN_CURLY expr CLOSE_CURLY)?
+
+cout_arg -> expr | STRING_LITERAL | KW_ENDL
+
+expr -> bool_term(BOOL_OR bool_term)*
+
+bool_term -> rel_expr (BOOL_AND rel_expr)*
+
+
+rel_expr -> arith_expr GT arith_expr
+        |arith_expr LT arith_expr
+        |arith_expr GTE arith_expr
+        |arith_expr LTE arith_expr
+        |arith_expr NE arith_expr
+        |arith_expr EQ arith_expr
+        |arith_expr
+
+arith_expr -> arith_term ( (OP_ADD || OP_SUB) arith_term)*
+
+arith_term -> arith_factor 
+                ((OP_MULT |OP_DIV |OP_MOD)arith_factor)*
+
+arith_factor -> NUMBER
+                | IDENT(
+                    (OPEN_BRACKET expr CLOSE_BRACKET)
+                    |(OPEN_BRACKET expr_list CLOSE_BRACKET)
+                    )?
+                | OPEN_PAR expr CLOSE_PAR
+
+expr_list -> expr (COMMA expr)*
+            | %empty
+
