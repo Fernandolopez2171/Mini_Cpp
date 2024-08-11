@@ -1,5 +1,2 @@
 # Ignorar la carpeta build
 /build
-
-# Ignorar el archivo grammar.txt
-grammar.txt
