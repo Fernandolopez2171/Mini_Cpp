@@ -1,2 +1,5 @@
 # Ignorar la carpeta build
 /build
+
+#ignorar la carpeta .vscode
+.vscode
