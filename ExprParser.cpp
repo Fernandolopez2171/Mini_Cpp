@@ -1,23 +1,33 @@
 #include "ExprParser.hpp"
 #include <iostream>
-#include <unordered_map>
-#include <string>
+Parser::Parser(Lexer &lexer) : lexer(lexer) {
+    advance();
+}
 
-Parser::Parser(Lexer &lexer) : lexer(lexer), currentToken(lexer.nextToken()) {}
-
-bool Parser::parse()
+void Parser::advance()
 {
-    while (currentToken != Token::Eof)
-    {
-        statement();
-    }
-    return true;
-}
-
-void Parser::statement() {
-    
-}
-
-void Parser::advance() {
     currentToken = lexer.nextToken();
+}
+
+void Parser::match(Token validToken)
+{
+    if (currentToken == validToken)
+        advance();
+    else
+        throw std::runtime_error("Syntax error");
+}
+
+//input
+void Parser::parse()
+{
+    parsePrg();
+}
+
+void Parser::parsePrg()
+{
+    while(currentToken != Token::Eof){
+        //parseFunc();
+        std::cout<<currentToken<<std::endl;
+        advance();
+    }
 }

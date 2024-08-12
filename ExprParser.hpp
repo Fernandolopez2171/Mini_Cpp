@@ -7,16 +7,33 @@
 class Parser
 {
 public:
+    //constructor
     Parser(Lexer &lexer);
-    bool parse();
-
+    //funcion principal
+    void parse();  //seria el parserInput
+    
 private:
+    std::unordered_map<std::string, double> variables;
+    //atributos
     Lexer &lexer;
     Token currentToken;
-    
-    std::unordered_map<std::string, double> variables;
+    //funciones auxiliares
+    void advance();//->listo
+    void match(Token validToken);//->listo
 
-    void advance();
-    void statement();
-
+    void parsePrg(); //prg //->listo
+    void parseFunc();//func
+    void parseParamList();//param_list
+    void parseParam();//param
+    void parseVarDecl();//var_decl
+    void parseType();//type
+    void parseStmt();//stmt
+    void parserCoutArg();//cout_arg
+    void parseExpr();//expr
+    void parseBoolTerm();//bool_term
+    void parseRelExpr();//rel_expr
+    void parseArithExpr();//arith_expr
+    void parseArithTerm();//arith_term
+    void parseArithFactor();//arith_factor
+    void parseExprList();///expr_list
 };

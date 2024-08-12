@@ -28,13 +28,12 @@ int main(int argc, char **argv)
 
     try
     {
-        if (parser.parse())
-        {
-            std::cout << "Parse successful\n";
-        }
+        parser.parse();
+        std::cout<<"Parsing successful\n";
     }
     catch (const std::exception &e)
     {
+        std::cerr << "Parsing failed\n";
         std::cerr << e.what() << "\n";
     }
 
