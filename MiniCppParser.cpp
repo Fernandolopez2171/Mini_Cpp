@@ -18,7 +18,7 @@ void Parser::match(Token validToken)
     }
     else
     {
-        std::cout<<currentToken<<std::endl;
+        std::cout << currentToken << std::endl;
         throw std::runtime_error("Syntax error");
     }
 }
@@ -40,36 +40,39 @@ void Parser::parsePrg()
 
 void Parser::parseFunc()
 {
-    parseType(); 
-    match(Token::IDENT); 
+    parseType();
+    match(Token::IDENT);
 
-    match(Token::OPEN_PAR); 
-    parseParamList(); 
-    match(Token::CLOSE_PAR); 
+    match(Token::OPEN_PAR);
+    parseParamList();
+    match(Token::CLOSE_PAR);
 
-    match(Token::OPEN_CURLY); 
+    match(Token::OPEN_CURLY);
 
-    
-    while (currentToken == Token::KW_INT) {
+    while (currentToken == Token::KW_INT)
+    {
         parseVarDecl();
     }
 
-   
-    while (currentToken != Token::CLOSE_CURLY && currentToken != Token::Eof) {
+    while (currentToken != Token::CLOSE_CURLY && currentToken != Token::Eof)
+    {
         parseStmt();
     }
 
-    match(Token::CLOSE_CURLY); 
+    match(Token::CLOSE_CURLY);
 }
 
-void Parser::parseType() {
-    if (currentToken == Token::KW_INT) {
+void Parser::parseType()
+{
+    if (currentToken == Token::KW_INT)
+    {
         match(Token::KW_INT);
-    } else {
+    }
+    else
+    {
         throw std::runtime_error("Syntax error: expected type");
     }
 }
-
 
 void Parser::parseParamList()
 {
@@ -87,66 +90,63 @@ void Parser::parseParamList()
 
 void Parser::parseParam()
 {
-    parseType();  
+    parseType();
     match(Token::IDENT);
-    
-    if (currentToken == Token::OPEN_BRACKET) {
+
+    if (currentToken == Token::OPEN_BRACKET)
+    {
         match(Token::OPEN_BRACKET);
-        match(Token::NUMBER);  
+        match(Token::NUMBER);
         match(Token::CLOSE_BRACKET);
     }
-
-    
 }
-
 
 void Parser::parseVarDecl()
 {
-    parseType(); 
+    parseType();
 
     match(Token::IDENT);
-    
-    if (currentToken == Token::OPEN_BRACKET) {
+
+    if (currentToken == Token::OPEN_BRACKET)
+    {
         match(Token::OPEN_BRACKET);
         match(Token::NUMBER);
         match(Token::CLOSE_BRACKET);
     }
 
-    
     while (currentToken == Token::COMMA)
     {
         match(Token::COMMA);
         match(Token::IDENT);
 
-        
-        if (currentToken == Token::OPEN_BRACKET) {
+        if (currentToken == Token::OPEN_BRACKET)
+        {
             match(Token::OPEN_BRACKET);
             match(Token::NUMBER);
             match(Token::CLOSE_BRACKET);
         }
     }
 
-    match(Token::SEMICOLON);  
+    match(Token::SEMICOLON);
 }
-
 
 void Parser::parseStmt()
 {
+    
     if (currentToken == Token::IDENT)
     {
-        
         match(Token::IDENT);
 
         if (currentToken == Token::OPEN_BRACKET)
         {
-            
+
             match(Token::OPEN_BRACKET);
-            //parseExpr(); 
+            parseExpr();
             match(Token::CLOSE_BRACKET);
         }
 
         match(Token::OP_ASSIGN);
-        //parseExpr(); 
+        parseExpr();
 
         match(Token::SEMICOLON);
     }
@@ -154,7 +154,7 @@ void Parser::parseStmt()
     {
         match(Token::KW_IF);
         match(Token::OPEN_PAR);
-        //parseExpr();
+        parseExpr();
         match(Token::CLOSE_PAR);
         match(Token::OPEN_CURLY);
 
@@ -182,7 +182,7 @@ void Parser::parseStmt()
     {
         match(Token::KW_WHILE);
         match(Token::OPEN_PAR);
-        //parseExpr();
+        parseExpr();
         match(Token::CLOSE_PAR);
         match(Token::OPEN_CURLY);
 
@@ -197,12 +197,27 @@ void Parser::parseStmt()
     {
         match(Token::KW_COUT);
         match(Token::LT_LT);
-        //parseExpr();
+        parserCoutArg();
 
         while (currentToken == Token::LT_LT)
         {
             match(Token::LT_LT);
-            //parseExpr();
+            parserCoutArg();
+        }
+
+        match(Token::SEMICOLON);
+    }
+    else if (currentToken == Token::GT_GT)
+    {
+
+        match(Token::GT_GT);
+        match(Token::IDENT);
+
+        if (currentToken == Token::OPEN_CURLY)
+        {
+            match(Token::OPEN_CURLY);
+            parseExpr();
+            match(Token::CLOSE_CURLY);
         }
 
         match(Token::SEMICOLON);
@@ -212,3 +227,52 @@ void Parser::parseStmt()
         throw std::runtime_error("Syntax error: unexpected token in statement");
     }
 }
+
+void Parser::parserCoutArg()
+{
+    if (currentToken == Token::STRING_LITERAL)
+    {
+        match(Token::STRING_LITERAL);
+    }
+    else if (currentToken == Token::KW_ENDL)
+    {
+        match(Token::KW_ENDL);
+    }
+    else
+    {
+        parseExpr();
+    }
+}
+
+void Parser::parseExpr()
+{
+    parseBoolTerm();
+    while (currentToken == Token::BOOL_OR)
+    {
+        match(Token::BOOL_OR);
+        parseBoolTerm();
+    }
+}
+
+void Parser::parseBoolTerm()
+{
+    parseRelExpr();
+    while (currentToken == Token::BOOL_AND)
+    {
+        match(Token::BOOL_AND);
+        parseRelExpr();
+    }
+}
+
+void Parser::parseRelExpr()
+{
+    //parseArithExpr();
+    while (currentToken == Token::GT || currentToken == Token::LT ||
+           currentToken == Token::GTE || currentToken == Token::LTE ||
+           currentToken == Token::NE || currentToken == Token::EQ)
+    {
+        advance();  
+        //parseArithExpr();
+    }
+}
+

@@ -13,7 +13,7 @@ public:
     void parse();  //seria el parserInput
     
 private:
-    std::unordered_map<std::string, double> variables;
+    std::unordered_map<std::string, double> variables;//eliminar
     //atributos
     Lexer &lexer;
     Token currentToken;
@@ -35,6 +35,7 @@ private:
     void parseExpr();//expr
     void parseBoolTerm();//bool_term
     void parseRelExpr();//rel_expr
+
     void parseArithExpr();//arith_expr
     void parseArithTerm();//arith_term
     void parseArithFactor();//arith_factor

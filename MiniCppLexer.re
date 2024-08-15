@@ -62,7 +62,7 @@ Token Lexer::nextToken()
             kw_if = "if";
             kw_else = "else";
             kw_while = "while";
-            kw_count = "std::count";
+            kw_cout = "std::cout";
             lt_lt = "<<";
             gt_gt = ">>";
             kw_endl = "std::endl";
@@ -111,7 +111,7 @@ Token Lexer::nextToken()
             kw_if { text = db.tokenText(); return Token::KW_IF; }
             kw_else { text = db.tokenText(); return Token::KW_ELSE; }
             kw_while { text = db.tokenText(); return Token::KW_WHILE; }
-            kw_count { text = db.tokenText(); return Token::KW_COUT; }
+            kw_cout { text = db.tokenText(); return Token::KW_COUT; }
             lt_lt { text = db.tokenText(); return Token::LT_LT; }
             gt_gt { text = db.tokenText(); return Token::GT_GT; }
             kw_endl { text = db.tokenText(); return Token::KW_ENDL; }
