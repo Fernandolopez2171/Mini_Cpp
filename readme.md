@@ -3,7 +3,7 @@
 
 ## Descripción
 
-MiniCpp es un compilador simple desarrollado para la clase de Compiladores 2. Este proyecto incluye un analizador léxico (lexer) y un analizador sintáctico (parser) diseñados para procesar un subconjunto del lenguaje C++. MiniCpp permite analizar archivos de código fuente escritos en este subconjunto y generar la estructura sintáctica del programa.
+MiniCpp es un compilador simple desarrollado para la clase de Compiladores 2. Este proyecto incluye un analizador léxico (lexer) y un analizador sintáctico (parser) diseñados para procesar un subconjunto del lenguaje C++.
 
 ## Estructura del Proyecto
 
