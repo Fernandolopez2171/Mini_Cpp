@@ -18,16 +18,19 @@ private:
     Lexer &lexer;
     Token currentToken;
     //funciones auxiliares
-    void advance();//->listo
-    void match(Token validToken);//->listo
+    void advance();
+    void match(Token validToken);
 
-    void parsePrg(); //prg //->listo
+    void parsePrg(); //prg 
     void parseFunc();//func
+    
     void parseParamList();//param_list
-    void parseParam();//param
-    void parseVarDecl();//var_decl
+    void parseParam();//param 
+    void parseVarDecl();//var_decl 
     void parseType();//type
     void parseStmt();//stmt
+
+
     void parserCoutArg();//cout_arg
     void parseExpr();//expr
     void parseBoolTerm();//bool_term

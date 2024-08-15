@@ -84,8 +84,12 @@ Token Lexer::nextToken()
             close_par = ")";
             open_curly = "{";
             close_curly = "}";
-            open_bracket = "[";
-            close_bracket = "]";
+            
+            open_bracket = '\x5B';  // ASCII value for '['
+            close_bracket = '\x5D'; // ASCII value for ']'
+
+
+
             comma = ",";
             semicolon = ";";
             ampersands = "&";
@@ -129,11 +133,13 @@ Token Lexer::nextToken()
             close_par { text = db.tokenText(); return Token::CLOSE_PAR; }
             open_curly { text = db.tokenText(); return Token::OPEN_CURLY; }
             close_curly { text = db.tokenText(); return Token::CLOSE_CURLY; }
+            
             open_bracket { text = db.tokenText(); return Token::OPEN_BRACKET; }
+
             close_bracket { text = db.tokenText(); return Token::CLOSE_BRACKET; }
             comma { text = db.tokenText(); return Token::COMMA; }
             semicolon { text = db.tokenText(); return Token::SEMICOLON; }
-            ampersands { text = db.tokenText(); return Token::AVPERSANS; }
+            ampersands { text = db.tokenText(); return Token::AMPERSANS; }
             ident { text = db.tokenText(); return Token::IDENT; }
         */
     }
