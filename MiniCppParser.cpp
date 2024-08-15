@@ -62,27 +62,13 @@ void Parser::parseFunc()
     match(Token::CLOSE_CURLY); 
 }
 
-
-void Parser::parseType()
-{
-    if (currentToken == Token::KW_INT)
-    {
+void Parser::parseType() {
+    if (currentToken == Token::KW_INT) {
         match(Token::KW_INT);
-
-   
-        while (currentToken == Token::OPEN_BRACKET)  
-        {
-            match(Token::OPEN_BRACKET);
-            match(Token::NUMBER); 
-            match(Token::CLOSE_BRACKET);
-        }
-    }
-    else
-    {
+    } else {
         throw std::runtime_error("Syntax error: expected type");
     }
 }
-
 
 
 void Parser::parseParamList()
@@ -102,23 +88,47 @@ void Parser::parseParamList()
 void Parser::parseParam()
 {
     parseType();  
-    match(Token::IDENT); 
+    match(Token::IDENT);
+    
+    if (currentToken == Token::OPEN_BRACKET) {
+        match(Token::OPEN_BRACKET);
+        match(Token::NUMBER);  
+        match(Token::CLOSE_BRACKET);
+    }
+
+    
 }
 
 
 void Parser::parseVarDecl()
 {
-    parseType();
-    match(Token::IDENT);
+    parseType(); 
 
+    match(Token::IDENT);
+    
+    if (currentToken == Token::OPEN_BRACKET) {
+        match(Token::OPEN_BRACKET);
+        match(Token::NUMBER);
+        match(Token::CLOSE_BRACKET);
+    }
+
+    
     while (currentToken == Token::COMMA)
     {
         match(Token::COMMA);
         match(Token::IDENT);
+
+        
+        if (currentToken == Token::OPEN_BRACKET) {
+            match(Token::OPEN_BRACKET);
+            match(Token::NUMBER);
+            match(Token::CLOSE_BRACKET);
+        }
     }
 
-    match(Token::SEMICOLON);
+    match(Token::SEMICOLON);  
 }
+
 
 void Parser::parseStmt()
 {

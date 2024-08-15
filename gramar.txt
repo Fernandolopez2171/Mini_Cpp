@@ -11,13 +11,14 @@ func->  type IDENT OPEN_PAR param_list CLOSE_PAR
 param_list -> param (COMMA param)*
            | %empty
 
-param -> TYPE IDENT
-        |TYPE AVPERSANS IDENT
+param -> type IDENT
+        |type AMPERSANS IDENT
+        |type IDENT OPEN_BRACKET NUMBER CLOSE_BRACKET
 
-var_decl->  type IDENT ( COMMA IDENT )* 
+var_decl -> type IDENT (COMMA IDENT)*
+          | type IDENT OPEN_BRACKET NUMBER CLOSE_BRACKET  (COMMA OPEN_BRACKET NUMBER CLOSE_BRACKET IDENT)*
 
 type -> KW_INT
-        |KW_INT OPEN_BRACKET NUMBER CLOSE_BRACKET
 
 stmt -> IDENT (OPEN_BRACKET expr CLOSE_BRACKET)? OP_ASSIGN expr
         |KW_IF OPEN_PAR expr CLOSE_PAR
