@@ -1,5 +1,5 @@
 #include <cstring>
-#include "ExprLexer.hpp"
+#include "MiniCppLexer.hpp"
 
 /*!max:re2c*/
 
@@ -62,10 +62,10 @@ Token Lexer::nextToken()
             kw_if = "if";
             kw_else = "else";
             kw_while = "while";
-            kw_count = "count";
+            kw_count = "std::count";
             lt_lt = "<<";
             gt_gt = ">>";
-            kw_endl = "endl";
+            kw_endl = "std::endl";
             string = "\"" [^\"]* "\"";
             bool_or = "||";
             bool_and = "&&";
@@ -88,7 +88,7 @@ Token Lexer::nextToken()
             close_bracket = "]";
             comma = ",";
             semicolon = ";";
-            avpersands = "&";
+            ampersands = "&";
 
             
             * { return Token::Other; }
@@ -128,7 +128,7 @@ Token Lexer::nextToken()
             close_bracket { text = db.tokenText(); return Token::CLOSE_BRACKET; }
             comma { text = db.tokenText(); return Token::COMMA; }
             semicolon { text = db.tokenText(); return Token::SEMICOLON; }
-            avpersands { text = db.tokenText(); return Token::AVPERSANS; }
+            ampersands { text = db.tokenText(); return Token::AVPERSANS; }
             
         */
     }
