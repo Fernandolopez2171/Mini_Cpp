@@ -11,10 +11,13 @@ void Parser::advance()
 
 void Parser::match(Token validToken)
 {
-    if (currentToken == validToken)
+    if (currentToken == validToken){
         advance();
-    else
+    }
+    else{
         throw std::runtime_error("Syntax error");
+    }
+      
 }
 
 //input
@@ -26,14 +29,20 @@ void Parser::parse()
 void Parser::parsePrg()
 {
     while(currentToken != Token::Eof){
+        //std::cout<<currentToken<<std::endl;
+        //advance();
         parseFunc();
     }
 }
 
 void Parser::parseFunc()
 {
-    parseType(); //type
-
+    parseType(); 
+    match(Token::IDENT); 
+    match(Token::OPEN_PAR); 
+    //parseParamList(); 
+    match(Token::CLOSE_PAR); 
+ 
 }
 
 void Parser::parseType()

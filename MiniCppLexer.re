@@ -55,7 +55,7 @@ Token Lexer::nextToken()
             wsp = [ \t\n]+;
 
         
-            ident = [a-zA-Z_][a-zA-Z0-9_]*;
+            
             kw_int = "int";
             number = [0-9]+("." [0-9]+)?;
             op_assign = "=";
@@ -90,12 +90,17 @@ Token Lexer::nextToken()
             semicolon = ";";
             ampersands = "&";
 
+            ident = [a-zA-Z_][a-zA-Z0-9_]*;
+            "//"[^'\n']*    {continue; } //linea
+            "/*"([^*]*"*"[^/])*[^*]*"*/"  {continue; }//bloque
+
             
-            * { return Token::Other; }
+            
+            //* { return Token::Other; }
             end{ return (YYMAXFILL == db.lim - db.tok)? Token::Eof : Token::Error;}
             wsp {continue;}
 
-            ident { text = db.tokenText(); return Token::IDENT; }
+            
             kw_int { text = db.tokenText(); return Token::KW_INT; }
             number { text = db.tokenText(); return Token::NUMBER; }
             op_assign { text = db.tokenText(); return Token::OP_ASSIGN; }
@@ -129,7 +134,7 @@ Token Lexer::nextToken()
             comma { text = db.tokenText(); return Token::COMMA; }
             semicolon { text = db.tokenText(); return Token::SEMICOLON; }
             ampersands { text = db.tokenText(); return Token::AVPERSANS; }
-            
+            ident { text = db.tokenText(); return Token::IDENT; }
         */
     }
 }
