@@ -97,9 +97,9 @@ void Parser::parseParamList()
 void Parser::parseParam()
 {
     parseType();
-    if (currentToken == Token::AMPERSANS)
+    if (currentToken == Token::AMPERSAND)
     {
-        match(Token::AMPERSANS);
+        match(Token::AMPERSAND);
     }
     match(Token::IDENT);
 
@@ -441,7 +441,7 @@ std::string Parser::tokenToString(Token token)
         return ",";
     case Token::SEMICOLON:
         return ";";
-    case Token::AMPERSANS:
+    case Token::AMPERSAND:
         return "&";
     case Token::IDENT:
         return "identifier";

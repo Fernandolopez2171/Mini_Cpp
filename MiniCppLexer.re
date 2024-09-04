@@ -96,7 +96,7 @@ Token Lexer::nextToken()
             close_bracket = '\x5D'; // ASCII value for ']'
             comma = ",";
             semicolon = ";";
-            ampersands = "&";
+            ampersand = "&";
             ident = [a-zA-Z_][a-zA-Z0-9_]*;
 
             wsp { column += db.cur - db.tok; continue; } // Incrementa columna según caracteres de espacio
@@ -133,7 +133,7 @@ Token Lexer::nextToken()
             close_bracket { column += db.cur - db.tok; text = db.tokenText(); return Token::CLOSE_BRACKET; }
             comma { column += db.cur - db.tok; text = db.tokenText(); return Token::COMMA; }
             semicolon { column += db.cur - db.tok; text = db.tokenText(); return Token::SEMICOLON; }
-            ampersands { column += db.cur - db.tok; text = db.tokenText(); return Token::AMPERSANS; }
+            ampersand { column += db.cur - db.tok; text = db.tokenText(); return Token::AMPERSAND; }
             ident { column += db.cur - db.tok; text = db.tokenText(); return Token::IDENT; }
             
             * { column += db.cur - db.tok; text = db.tokenText(); return Token::Other; }

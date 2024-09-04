@@ -38,7 +38,7 @@ enum Token {
     CLOSE_BRACKET,  // ]
     COMMA,          // ,
     SEMICOLON,      // ;
-    AMPERSANS,      // &
+    AMPERSAND,      // &
     Other,          // Otros tokens no categorizados
     Error,          // Token de error
     Eof             // Fin de archivo
