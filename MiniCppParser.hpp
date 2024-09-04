@@ -40,4 +40,6 @@ private:
     void parseArithTerm();//arith_term
     void parseArithFactor();//arith_factor
     void parseExprList();///expr_list
+
+    std::string tokenToString(Token token);
 };
