@@ -4,7 +4,6 @@
 
 int main(int argc, char **argv)
 {
-
     if (argc != 2)
     {
         std::cerr << "Not enough arguments\n";
@@ -12,14 +11,14 @@ int main(int argc, char **argv)
     }
 
     std::ifstream in(argv[1]);
-    if (in.peek() == std::ifstream::traits_type::eof())
-    {
-        std::cerr << "Empty file\n";
-        return 1;
-    }
     if (!in.is_open())
     {
         std::cerr << "Cannot open file\n";
+        return 1;
+    }
+    if (in.peek() == std::ifstream::traits_type::eof())
+    {
+        std::cerr << "Empty file\n";
         return 1;
     }
 
@@ -29,14 +28,13 @@ int main(int argc, char **argv)
     try
     {
         parser.parse();
-        std::cout<<"Parsing successful\n";
+        std::cout << "Parsing successful\n";
     }
     catch (const std::exception &e)
     {
         std::cerr << "Parsing failed\n";
         std::cerr << e.what() << "\n";
     }
-
 
     return 0;
 }

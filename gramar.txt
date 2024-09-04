@@ -21,6 +21,7 @@ var_decl -> type IDENT (COMMA IDENT)*
 type -> KW_INT
 
 stmt -> IDENT (OPEN_BRACKET expr CLOSE_BRACKET)? OP_ASSIGN expr
+        |IDENT OPEN_PAR (expr_list)? CLOSE_PAR 
         |KW_IF OPEN_PAR expr CLOSE_PAR
             OPEN_CURLY ( stmt SEMICOLON )*
             CLOSE_CURLY
@@ -29,7 +30,8 @@ stmt -> IDENT (OPEN_BRACKET expr CLOSE_BRACKET)? OP_ASSIGN expr
             OPEN_CURLY(stmt SEMICOLON)*
             CLOSE_CURLY
         |KW_COUT LT_LT cout_arg (LT_LT cout_arg)*
-        |KW GT_GT IDENT (OPEN_CURLY expr CLOSE_CURLY)?
+        |KW_CIN GT_GT IDENT (OPEN_BRACKET expr CLOSE_BRACKET)?
+        
 
 cout_arg -> expr | STRING_LITERAL | KW_ENDL
 
@@ -54,10 +56,11 @@ arith_term -> arith_factor
 arith_factor -> NUMBER
                 | IDENT(
                     (OPEN_BRACKET expr CLOSE_BRACKET)
-                    |(OPEN_BRACKET expr_list CLOSE_BRACKET)
+                    |(OPEN_PAR expr_list CLOSE_PAR)
                     )?
                 | OPEN_PAR expr CLOSE_PAR
 
 expr_list -> expr (COMMA expr)*
             | %empty
+
 

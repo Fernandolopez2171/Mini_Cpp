@@ -38,11 +38,13 @@ bool Lexer::DataBuffer::fill(size_t need)
     return true;
 }
 
+
 Token Lexer::nextToken()
 {
     while (true)
     {
         db.tok = db.cur;
+
         /*!re2c
             re2c:define:YYCTYPE = char;
             re2c:define:YYCURSOR = db.cur;
@@ -52,10 +54,15 @@ Token Lexer::nextToken()
             re2c:define:YYMARKER = db.marker;
 
             end = "\x00";
-            wsp = [ \t\n]+;
+            wsp = [ \t]+;
+            newline = "\n";
+            comment_line = "//" [^\n]*;
+            comment_block = "/*"[^*]*"*"[^/]*"*"+"/";
 
-        
-            
+            newline { line++; column = 1; continue; } // Resetea la columna en nueva línea
+            comment_line { continue; } // Comentarios de una línea
+            comment_block { continue; } // Comentarios de bloque
+
             kw_int = "int";
             number = [0-9]+("." [0-9]+)?;
             op_assign = "=";
@@ -84,63 +91,53 @@ Token Lexer::nextToken()
             close_par = ")";
             open_curly = "{";
             close_curly = "}";
-            
+            kw_cin = "std::cin";
             open_bracket = '\x5B';  // ASCII value for '['
             close_bracket = '\x5D'; // ASCII value for ']'
-
-
-
             comma = ",";
             semicolon = ";";
             ampersands = "&";
-
             ident = [a-zA-Z_][a-zA-Z0-9_]*;
-            "//"[^'\n']*    {continue; } //linea
-            "/*"([^*]*"*"[^/])*[^*]*"*/"  {continue; }//bloque
 
+            wsp { column += db.cur - db.tok; continue; } // Incrementa columna según caracteres de espacio
+            kw_int { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_INT; }
+            number { column += db.cur - db.tok; text = db.tokenText(); return Token::NUMBER; }
+            op_assign { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_ASSIGN; }
+            kw_if { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_IF; }
+            kw_else { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_ELSE; }
+            kw_while { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_WHILE; }
+            kw_cout { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_COUT; }
+            kw_cin { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_CIN; }
+            lt_lt { column += db.cur - db.tok; text = db.tokenText(); return Token::LT_LT; }
+            gt_gt { column += db.cur - db.tok; text = db.tokenText(); return Token::GT_GT; }
+            kw_endl { column += db.cur - db.tok; text = db.tokenText(); return Token::KW_ENDL; }
+            string { column += db.cur - db.tok; text = db.tokenText(); return Token::STRING_LITERAL; }
+            bool_or { column += db.cur - db.tok; text = db.tokenText(); return Token::BOOL_OR; }
+            bool_and { column += db.cur - db.tok; text = db.tokenText(); return Token::BOOL_AND; }
+            gt { column += db.cur - db.tok; text = db.tokenText(); return Token::GT; }
+            lt { column += db.cur - db.tok; text = db.tokenText(); return Token::LT; }
+            gte { column += db.cur - db.tok; text = db.tokenText(); return Token::GTE; }
+            lte { column += db.cur - db.tok; text = db.tokenText(); return Token::LTE; }
+            ne { column += db.cur - db.tok; text = db.tokenText(); return Token::NE; }
+            eq { column += db.cur - db.tok; text = db.tokenText(); return Token::EQ; }
+            op_add { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_ADD; }
+            op_sub { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_SUB; }
+            op_mult { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_MULT; }
+            op_div { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_DIV; }
+            op_mod { column += db.cur - db.tok; text = db.tokenText(); return Token::OP_MOD; }
+            open_par { column += db.cur - db.tok; text = db.tokenText(); return Token::OPEN_PAR; }
+            close_par { column += db.cur - db.tok; text = db.tokenText(); return Token::CLOSE_PAR; }
+            open_curly { column += db.cur - db.tok; text = db.tokenText(); return Token::OPEN_CURLY; }
+            close_curly { column += db.cur - db.tok; text = db.tokenText(); return Token::CLOSE_CURLY; }
+            open_bracket { column += db.cur - db.tok; text = db.tokenText(); return Token::OPEN_BRACKET; }
+            close_bracket { column += db.cur - db.tok; text = db.tokenText(); return Token::CLOSE_BRACKET; }
+            comma { column += db.cur - db.tok; text = db.tokenText(); return Token::COMMA; }
+            semicolon { column += db.cur - db.tok; text = db.tokenText(); return Token::SEMICOLON; }
+            ampersands { column += db.cur - db.tok; text = db.tokenText(); return Token::AMPERSANS; }
+            ident { column += db.cur - db.tok; text = db.tokenText(); return Token::IDENT; }
             
-            
-            //* { return Token::Other; }
-            end{ return (YYMAXFILL == db.lim - db.tok)? Token::Eof : Token::Error;}
-            wsp {continue;}
-
-            
-            kw_int { text = db.tokenText(); return Token::KW_INT; }
-            number { text = db.tokenText(); return Token::NUMBER; }
-            op_assign { text = db.tokenText(); return Token::OP_ASSIGN; }
-            kw_if { text = db.tokenText(); return Token::KW_IF; }
-            kw_else { text = db.tokenText(); return Token::KW_ELSE; }
-            kw_while { text = db.tokenText(); return Token::KW_WHILE; }
-            kw_cout { text = db.tokenText(); return Token::KW_COUT; }
-            lt_lt { text = db.tokenText(); return Token::LT_LT; }
-            gt_gt { text = db.tokenText(); return Token::GT_GT; }
-            kw_endl { text = db.tokenText(); return Token::KW_ENDL; }
-            string { text = db.tokenText(); return Token::STRING_LITERAL; }
-            bool_or { text = db.tokenText(); return Token::BOOL_OR; }
-            bool_and { text = db.tokenText(); return Token::BOOL_AND; }
-            gt { text = db.tokenText(); return Token::GT; }
-            lt { text = db.tokenText(); return Token::LT; }
-            gte { text = db.tokenText(); return Token::GTE; }
-            lte { text = db.tokenText(); return Token::LTE; }
-            ne { text = db.tokenText(); return Token::NE; }
-            eq { text = db.tokenText(); return Token::EQ; }
-            op_add { text = db.tokenText(); return Token::OP_ADD; }
-            op_sub { text = db.tokenText(); return Token::OP_SUB; }
-            op_mult { text = db.tokenText(); return Token::OP_MULT; }
-            op_div { text = db.tokenText(); return Token::OP_DIV; }
-            op_mod { text = db.tokenText(); return Token::OP_MOD; }
-            open_par { text = db.tokenText(); return Token::OPEN_PAR; }
-            close_par { text = db.tokenText(); return Token::CLOSE_PAR; }
-            open_curly { text = db.tokenText(); return Token::OPEN_CURLY; }
-            close_curly { text = db.tokenText(); return Token::CLOSE_CURLY; }
-            
-            open_bracket { text = db.tokenText(); return Token::OPEN_BRACKET; }
-
-            close_bracket { text = db.tokenText(); return Token::CLOSE_BRACKET; }
-            comma { text = db.tokenText(); return Token::COMMA; }
-            semicolon { text = db.tokenText(); return Token::SEMICOLON; }
-            ampersands { text = db.tokenText(); return Token::AMPERSANS; }
-            ident { text = db.tokenText(); return Token::IDENT; }
+            * { column += db.cur - db.tok; text = db.tokenText(); return Token::Other; }
+            end { return (YYMAXFILL == db.lim - db.tok) ? Token::Eof : Token::Error; }
         */
     }
 }

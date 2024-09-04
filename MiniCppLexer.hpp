@@ -12,6 +12,7 @@ enum Token {
     KW_ELSE,        // else
     KW_WHILE,       // while
     KW_COUT,        // cout
+    KW_CIN,         // cin
     LT_LT,          // <<
     GT_GT,          // >>
     KW_ENDL,        // endl
@@ -55,7 +56,12 @@ public:
 
     std::string tokenText() const { return text; }
 
+    int getLine() const {return line;}
+    int getColumn() const {return column;}
+    
 private:
+    int line = 1;
+    int column = 1;
     struct DataBuffer
     {
         char *buf;

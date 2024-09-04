@@ -18,8 +18,8 @@ void Parser::match(Token validToken)
     }
     else
     {
-        std::cout << currentToken << std::endl;
-        throw std::runtime_error("Syntax error");
+        std::cout << "Token: " << static_cast<int>(currentToken) << "\n";
+        throw std::runtime_error("Error en línea " + std::to_string(lexer.getLine()) + " columna " + std::to_string(lexer.getColumn()));
     }
 }
 
@@ -33,7 +33,6 @@ void Parser::parsePrg()
 {
     while (currentToken != Token::Eof)
     {
-
         parseFunc();
     }
 }
@@ -70,7 +69,7 @@ void Parser::parseType()
     }
     else
     {
-        throw std::runtime_error("Syntax error: expected type");
+        throw std::runtime_error("Error en línea " + std::to_string(lexer.getLine()) + " columna " + std::to_string(lexer.getColumn()));
     }
 }
 
@@ -91,13 +90,22 @@ void Parser::parseParamList()
 void Parser::parseParam()
 {
     parseType();
-    match(Token::IDENT);
-
-    if (currentToken == Token::OPEN_BRACKET)
+    
+    if (currentToken == Token::AMPERSANS)
     {
-        match(Token::OPEN_BRACKET);
-        match(Token::NUMBER);
-        match(Token::CLOSE_BRACKET);
+        match(Token::AMPERSANS);
+        match(Token::IDENT);
+    }
+    else
+    {
+        match(Token::IDENT);
+
+        if (currentToken == Token::OPEN_BRACKET)
+        {
+            match(Token::OPEN_BRACKET);
+            match(Token::NUMBER);
+            match(Token::CLOSE_BRACKET);
+        }
     }
 }
 
@@ -132,22 +140,36 @@ void Parser::parseVarDecl()
 
 void Parser::parseStmt()
 {
-    
-    if (currentToken == Token::IDENT)
+
+     if (currentToken == Token::IDENT)
     {
         match(Token::IDENT);
 
         if (currentToken == Token::OPEN_BRACKET)
         {
-
             match(Token::OPEN_BRACKET);
             parseExpr();
             match(Token::CLOSE_BRACKET);
         }
 
-        match(Token::OP_ASSIGN);
-        parseExpr();
-
+        if (currentToken == Token::OP_ASSIGN)
+        {
+            match(Token::OP_ASSIGN);
+            parseExpr();
+        }
+        else if (currentToken == Token::OPEN_PAR)
+        {
+            match(Token::OPEN_PAR);
+            if (currentToken != Token::CLOSE_PAR)
+            {
+                parseExprList(); // Método que maneja expr_list
+            }
+            match(Token::CLOSE_PAR);
+        }
+        else
+        {
+            throw std::runtime_error("Error en línea " + std::to_string(lexer.getLine()) + " columna " + std::to_string(lexer.getColumn()));
+        }
         match(Token::SEMICOLON);
     }
     else if (currentToken == Token::KW_IF)
@@ -207,24 +229,24 @@ void Parser::parseStmt()
 
         match(Token::SEMICOLON);
     }
-    else if (currentToken == Token::GT_GT)
+    else if (currentToken == Token::KW_CIN)
     {
-
+        match(Token::KW_CIN);
         match(Token::GT_GT);
         match(Token::IDENT);
 
-        if (currentToken == Token::OPEN_CURLY)
+        if (currentToken == Token::OPEN_BRACKET)
         {
-            match(Token::OPEN_CURLY);
+            match(Token::OPEN_BRACKET);
             parseExpr();
-            match(Token::CLOSE_CURLY);
+            match(Token::CLOSE_PAR);
         }
 
         match(Token::SEMICOLON);
     }
     else
     {
-        throw std::runtime_error("Syntax error: unexpected token in statement");
+        throw std::runtime_error("Error en línea " + std::to_string(lexer.getLine()) + " columna " + std::to_string(lexer.getColumn()));
     }
 }
 
@@ -266,13 +288,78 @@ void Parser::parseBoolTerm()
 
 void Parser::parseRelExpr()
 {
-    //parseArithExpr();
+    parseArithExpr();
     while (currentToken == Token::GT || currentToken == Token::LT ||
            currentToken == Token::GTE || currentToken == Token::LTE ||
            currentToken == Token::NE || currentToken == Token::EQ)
     {
-        advance();  
-        //parseArithExpr();
+        advance();
+        parseArithExpr();
+    }
+}
+void Parser::parseArithExpr()
+{
+    parseArithTerm();
+    while (currentToken == Token::OP_ADD || currentToken == Token::OP_SUB)
+    {
+        advance();
+        parseArithTerm();
     }
 }
 
+void Parser::parseArithTerm()
+{
+    parseArithFactor();
+    while (currentToken == Token::OP_MULT || currentToken == Token::OP_DIV || currentToken == Token::OP_MOD)
+    {
+        advance();
+        parseArithFactor();
+    }
+}
+
+void Parser::parseArithFactor()
+{
+    if (currentToken == Token::NUMBER)
+    {
+        match(Token::NUMBER);
+    }
+    else if (currentToken == Token::IDENT)
+    {
+        match(Token::IDENT);
+        if (currentToken == Token::OPEN_BRACKET)
+        {
+            match(Token::OPEN_BRACKET);
+            parseExpr();
+            match(Token::CLOSE_BRACKET);
+        }
+        else if (currentToken == Token::OPEN_PAR)
+        {
+            match(Token::OPEN_PAR);
+            parseExprList();
+            match(Token::CLOSE_PAR);
+        }
+    }
+    else if (currentToken == Token::OPEN_PAR)
+    {
+        match(Token::OPEN_PAR);
+        parseExpr();
+        match(Token::CLOSE_PAR);
+    }
+    else
+    {
+        throw std::runtime_error("Error en línea " + std::to_string(lexer.getLine()) + " columna " + std::to_string(lexer.getColumn()));
+    }
+}
+
+void Parser::parseExprList()
+{
+    if (currentToken != Token::CLOSE_PAR)
+    {
+        parseExpr();
+        while (currentToken == Token::COMMA)
+        {
+            match(Token::COMMA);
+            parseExpr();
+        }
+    }
+}
