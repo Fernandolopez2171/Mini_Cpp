@@ -21,4 +21,9 @@ add_executable(${PROJECT_NAME}  MiniCppLexer.hpp
                                 MiniCppLexerImpl.cpp
                                 MiniCppParser.hpp
                                 MiniCppParser.cpp
+                                Ast.hpp
+                                RegisterManager.hpp
+                                RegisterManager.cpp
+                                SymbolTable.hpp
+                                SymbolTable.cpp
                                 main.cpp)

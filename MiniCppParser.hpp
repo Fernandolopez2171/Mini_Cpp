@@ -1,45 +1,39 @@
 #pragma once
 #include "MiniCppLexer.hpp"
+#include "Ast.hpp"
 #include <stdexcept>
-#include <unordered_map>
-#include <string>
 
 class Parser
 {
 public:
-    //constructor
     Parser(Lexer &lexer);
-    //funcion principal
-    void parse();  //seria el parserInput
-    
+    AstNode *parse();
+
 private:
-    std::unordered_map<std::string, double> variables;//eliminar
-    //atributos
     Lexer &lexer;
     Token currentToken;
-    //funciones auxiliares
     void advance();
+    std::string tokenToString(Token token);
     void match(Token validToken);
 
-    void parsePrg(); //prg 
-    void parseFunc();//func
-    
-    void parseParamList();//param_list
-    void parseParam();//param 
-    void parseVarDecl();//var_decl 
-    void parseType();//type
-    void parseStmt();//stmt
+    std::string functionName; // nombre de la función actual
+    std::string prevFunctionName;
+    bool includeReturn = false; // actica el jr $ra
+    AstNode *parsePrg();
+    AstNode *parseFunc();
+    AstNode *parseParamList(); // param_list
+    AstNode *parseParam();     // param
+    AstNode *parseVarDecl();   // var_decl
+    AstNode *parseType();      // type
+    AstNode *parseStmt();      // stmt
 
+    AstNode *parserCoutArg(); // cout_arg
+    AstNode *parseExpr();     // expr
+    AstNode *parseBoolTerm(); // bool_term
+    AstNode *parseRelExpr();  // rel_expr
 
-    void parserCoutArg();//cout_arg
-    void parseExpr();//expr
-    void parseBoolTerm();//bool_term
-    void parseRelExpr();//rel_expr
-
-    void parseArithExpr();//arith_expr
-    void parseArithTerm();//arith_term
-    void parseArithFactor();//arith_factor
-    void parseExprList();///expr_list
-
-    std::string tokenToString(Token token);
+    AstNode *parseArithExpr();   // arith_expr
+    AstNode *parseArithTerm();   // arith_term
+    AstNode *parseArithFactor(); // arith_factor
+    AstNode *parseExprList();    /// expr_list
 };

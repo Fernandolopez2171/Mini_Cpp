@@ -53,7 +53,7 @@ public:
     Lexer(std::ifstream &in) : db(in) {}
 
     Token nextToken();
-
+    Token peekNextToken();
     std::string tokenText() const { return text; }
 
     int getLine() const {return line;}
@@ -84,4 +84,6 @@ private:
 private:
     DataBuffer db;
     std::string text;
+      Token lastToken;  // Para guardar el último token
+    bool peeked = false;  // Indica si hemos "espiado" el siguiente token
 };

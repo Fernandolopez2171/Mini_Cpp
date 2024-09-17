@@ -59,12 +59,12 @@ Token Lexer::nextToken()
             comment_line = "//" [^\n]*;
             comment_block = "/*"[^*]*"*"[^/]*"*"+"/";
 
-            newline { line++; column = 1; continue; } // Resetea la columna en nueva línea
-            comment_line { continue; } // Comentarios de una línea
-            comment_block { continue; } // Comentarios de bloque
+            newline { line++; column = 1; continue; }
+            comment_line { continue; } 
+            comment_block { continue; } 
 
             kw_int = "int";
-            number = [0-9]+("." [0-9]+)?;
+            number = [0-9]+;
             op_assign = "=";
             kw_if = "if";
             kw_else = "else";
@@ -140,4 +140,33 @@ Token Lexer::nextToken()
             end { return (YYMAXFILL == db.lim - db.tok) ? Token::Eof : Token::Error; }
         */
     }
+}
+
+Token Lexer::peekNextToken()
+{
+    
+    char* savedCur = db.cur;
+    char* savedLim = db.lim;
+    char* savedTok = db.tok;
+    char* savedMarker = db.marker;
+    std::string savedText = text;
+    int savedLine = line;
+    int savedColumn = column;
+    bool savedEof = db.eof;
+
+    
+    Token nextToken = this->nextToken();
+
+    
+    db.cur = savedCur;
+    db.lim = savedLim;
+    db.tok = savedTok;
+    db.marker = savedMarker;
+    text = savedText;
+    line = savedLine;
+    column = savedColumn;
+    db.eof = savedEof;
+
+    
+    return nextToken;
 }
