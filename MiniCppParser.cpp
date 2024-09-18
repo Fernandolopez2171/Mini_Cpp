@@ -444,7 +444,7 @@ AstNode *Parser::parseStmt()
         else
         {
             match(Token::SEMICOLON);
-            return new CinExpr(varName);
+            return new CinExpr(varName, functionName);
         }
     }
     else

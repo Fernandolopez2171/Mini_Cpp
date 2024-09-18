@@ -876,25 +876,21 @@ public:
 class CinExpr : public AstNode
 {
     std::string varName;
-
+    std::string functionName;
 public:
-    CinExpr(const std::string& varName)
-        : varName(varName) {}
+    CinExpr(const std::string& varName, const std::string& functionName) : varName(varName),functionName(functionName) {}
 
     CodePlace generateCode() override
     {
         CodePlace result;
 
-        
-        
-        
         result.code += "li $v0, 5\n";              
         result.code += "syscall\n";                
-        
-        
-        result.code += "sw $v0, " + varName + "\n"; 
 
         
+        int offset = SymbolTable::getVarOffset(functionName, varName); 
+        result.code += "sw $v0, " + std::to_string(offset) + "($sp)\n"; 
+
         return result;
     }
 };
